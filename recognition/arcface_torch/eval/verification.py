@@ -148,6 +148,9 @@ def calculate_val(thresholds,
             _, far_train[threshold_idx] = calculate_val_far(
                 threshold, dist[train_set], actual_issame[train_set])
         if np.max(far_train) >= far_target:
+            # deduplicate far_train and remove the indexes in thresholds
+            far_train, unique_idxs = np.unique(far_train, return_index=True)
+            thresholds = np.asarray(thresholds)[unique_idxs]
             f = interpolate.interp1d(far_train, thresholds, kind='slinear')
             threshold = f(far_target)
         else:
