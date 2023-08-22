@@ -3,6 +3,7 @@ import os
 import time
 import json
 from typing import List
+import numpy as np
 
 import torch
 
@@ -57,6 +58,13 @@ class CallBackVerification(object):
                 "std2": std2,
             }
         logging.info(f"Verification results at step {global_step}: {results}")
+        print(f"Verification results at step {global_step}: {results}")
+        # mean and std of acc2
+        acc2_list = [results[name]["acc2"] for name in results]
+        acc2_mean = np.mean(acc2_list)
+        acc2_std = np.std(acc2_list)
+        print(f"Verification results at step {global_step}: acc2_mean={acc2_mean}, acc2_std={acc2_std}")
+
         with open(f"verification_results_step{global_step}.txt", "w") as f:
             json.dump(results, f, indent=4)
         
