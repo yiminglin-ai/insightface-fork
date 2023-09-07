@@ -1,6 +1,8 @@
-tensorboard
-easydict
-mxnet
-onnx
-sklearn
-opencv-python
+tensorboard==2.14
+easydict==1.1
+mxnet==1.9.1
+numpy<1.24
+onnx==1.14
+scikit-learn==1.3
+opencv-python==4.8
+timm==0.9.7
