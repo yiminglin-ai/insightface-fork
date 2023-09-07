@@ -88,5 +88,28 @@ def get_model(name, **kwargs):
             img_size=112, patch_size=9, num_classes=num_features, embed_dim=1024, depth=48,
             num_heads=8, drop_path_rate=0.1, norm_layer="ln", mask_ratio=0, using_checkpoint=True)
 
+    elif name == "ts_vit_s":
+        num_features = kwargs.get("num_features", 512)
+        from .transface_vit import VisionTransformer
+        return VisionTransformer(
+            img_size=112, patch_size=9, num_classes=num_features, embed_dim=512, depth=12,
+            num_heads=8, drop_path_rate=0.1, norm_layer="ln", mask_ratio=0.1)
+
+    elif name == "ts_vit_b":
+        # this is a feature
+        num_features = kwargs.get("num_features", 512)
+        from .transface_vit import VisionTransformer
+        return VisionTransformer(
+            img_size=112, patch_size=9, num_classes=num_features, embed_dim=512, depth=24,
+            num_heads=8, drop_path_rate=0.1, norm_layer="ln", mask_ratio=0.1, using_checkpoint=True)
+
+    elif name == "ts_vit_l_dp005_mask_005":  # For WebFace42M
+        # this is a feature
+        num_features = kwargs.get("num_features", 512)
+        from .transface_vit import VisionTransformer
+        return VisionTransformer(
+            img_size=112, patch_size=9, num_classes=num_features, embed_dim=768, depth=24,
+            num_heads=8, drop_path_rate=0.05, norm_layer="ln", mask_ratio=0.05, using_checkpoint=True)
+
     else:
         raise ValueError()
