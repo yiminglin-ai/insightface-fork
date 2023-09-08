@@ -18,12 +18,18 @@ from skimage import transform as trans
 from backbones import get_model
 from sklearn.metrics import roc_curve, auc
 
-from menpo.visualize.viewmatplotlib import sample_colours_from_colourmap
 from prettytable import PrettyTable
 from pathlib import Path
 
 import sys
 import warnings
+
+def sample_colours_from_colourmap(n_colours, colour_map):
+    import matplotlib.pyplot as plt
+
+    cm = plt.get_cmap(colour_map)
+    return [cm(1.0 * i / n_colours)[:3] for i in range(n_colours)]
+
 
 sys.path.insert(0, "../")
 warnings.filterwarnings("ignore")
@@ -161,6 +167,7 @@ def get_image_feature(img_path, files_list, model_path, epoch, gpu_id):
     faceness_scores = []
     batch = 0
     img_feats = np.empty((len(files), 1024), dtype=np.float32)
+    num_total_batches = len(files) // batch_size + 1
 
     batch_data = np.empty((2 * batch_size, 3, 112, 112))
     embedding = Embedding(model_path, data_shape, batch_size)
@@ -176,7 +183,7 @@ def get_image_feature(img_path, files_list, model_path, epoch, gpu_id):
         batch_data[2 * (img_index - batch * batch_size)][:] = input_blob[0]
         batch_data[2 * (img_index - batch * batch_size) + 1][:] = input_blob[1]
         if (img_index + 1) % batch_size == 0:
-            print('batch', batch)
+            print(f'{batch} / {num_total_batches}')
             img_feats[batch * batch_size:batch * batch_size +
                                          batch_size][:] = embedding.forward_db(batch_data)
             batch += 1
@@ -195,7 +202,7 @@ def get_image_feature(img_path, files_list, model_path, epoch, gpu_id):
         batch_data[2 * img_index][:] = input_blob[0]
         batch_data[2 * img_index + 1][:] = input_blob[1]
         if (img_index + 1) % rare_size == 0:
-            print('batch', batch)
+            print(f'{batch} / {num_total_batches}')
             img_feats[len(files) -
                       rare_size:][:] = embedding.forward_db(batch_data)
             batch += 1
